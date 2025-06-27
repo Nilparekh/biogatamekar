@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marriage Biodata Generator</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Marriage Biodata Generator</h1>
+
+    <form id="biodataForm">
+      <input type="text" placeholder="Full Name" id="name" required />
+      <input type="text" placeholder="Address" id="address" required />
+      <input type="text" placeholder="Date of Birth (DD-MM-YYYY)" id="dob" required />
+      <input type="text" placeholder="Birth Place" id="birthplace" />
+      <input type="text" placeholder="Height" id="height" />
+      <input type="text" placeholder="Weight" id="weight" />
+      <input type="text" placeholder="Education" id="education" />
+      <input type="text" placeholder="Kul (Caste)" id="kul" />
+      <input type="file" accept="image/*" id="photo" />
+      <h3>Family Details</h3>
+      <input type="text" placeholder="Father's Name" id="father" />
+      <input type="text" placeholder="Father's Occupation" id="fatherOcc" />
+      <input type="text" placeholder="Mother's Name" id="mother" />
+      <input type="text" placeholder="Brother's Name" id="brother" />
+      <input type="text" placeholder="Contact Number" id="contact" />
+
+      <button type="submit">Generate Biodata</button>
+      <button type="button" onclick="saveProfile()">Save Profile</button>
+    </form>
+
+    <select id="profileSelect" onchange="loadProfile()">
+      <option value="">-- Load Saved Profile --</option>
+    </select>
+
+    <div id="biodataOutput" class="output-card"></div>
+    <button onclick="downloadPDF()" id="downloadBtn" style="display:none;">Download as PDF</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
