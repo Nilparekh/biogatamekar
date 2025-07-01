@@ -1,132 +1,228 @@
-let imageBase64 = "";
-
-document.getElementById("photo").addEventListener("change", function (e) {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = function () {
-    imageBase64 = reader.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-});
-
-document.getElementById("biodataForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  generateBiodata();
-});
-
-function generateBiodata(data = null) {
-  const get = (id) => data ? data[id] : document.getElementById(id).value.trim();
-
-  const personalFields = {
-    name: "Name",
-    address: "Address",
-    dob: "Date of Birth",
-    birthplace: "Birth Place",
-    height: "Height",
-    weight: "Weight",
-    education: "Education",
-    kul: "Kul"
-  };
-
-  const familyFields = {
-    father: "Father's Name",
-    fatherOcc: "Father's Occupation",
-    mother: "Mother's Name",
-    brother: "Brother's Name",
-    contact: "Contact Number"
-  };
-
-  let photoHTML = "";
-  if (data && data.photo) {
-    imageBase64 = data.photo;
-  }
-
-  if (imageBase64) {
-    photoHTML = `<div style="text-align:center;">
-      <img src="${imageBase64}" style="max-width:150px; width:100%; height:auto; border-radius:10px; margin-bottom:15px;">
-    </div>`;
-  }
-
-  let personalDetailsHTML = `<h2>BIO DATA</h2><hr><br>`;
-  personalDetailsHTML += `<h3>PERSONAL DETAILS:</h3><ul>`;
-  for (const id in personalFields) {
-    const value = get(id);
-    if (value) {
-      personalDetailsHTML += `<li><strong>${personalFields[id]}:</strong> ${value}</li>`;
-    }
-  }
-  personalDetailsHTML += "</ul><br>";
-
-  let familyDetailsHTML = `<h3>FAMILY DETAILS:</h3><ul>`;
-  for (const id in familyFields) {
-    const value = get(id);
-    if (value) {
-      familyDetailsHTML += `<li><strong>${familyFields[id]}:</strong> ${value}</li>`;
-    }
-  }
-  familyDetailsHTML += "</ul>";
-
-  const finalHTML = photoHTML + personalDetailsHTML + familyDetailsHTML;
-
-  document.getElementById("biodataOutput").innerHTML = finalHTML;
-  document.getElementById("downloadBtn").style.display = "block";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-function downloadPDF() {
-  const element = document.getElementById("biodataOutput");
-  html2pdf().from(element).save("Marriage_Biodata.pdf");
+body {
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: linear-gradient(120deg, #f2f4f8 60%, #e3eafc 100%);
+  padding: 0;
+  min-height: 100vh;
 }
 
-function saveProfile() {
-  const fields = [
-    "name", "address", "dob", "birthplace", "height", "weight",
-    "education", "kul", "father", "fatherOcc", "mother", "brother", "contact"
-  ];
-  let profile = {};
-  fields.forEach(id => {
-    profile[id] = document.getElementById(id).value.trim();
-  });
-  profile.photo = imageBase64 || "";
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(120deg, #e3eafc 60%, #f2f4f8 100%);
+  padding: 60px 0 40px 0;
+  text-align: center;
+}
+.hero-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.logo {
+  width: 80px;
+  margin-bottom: 18px;
+}
+.hero-section h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.hero-section p {
+  color: #34495e;
+  font-size: 1.15rem;
+  margin-bottom: 24px;
+}
+.start-btn {
+  background: #007bff;
+  color: #fff;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.start-btn:hover {
+  background: #0056b3;
+}
 
-  const saved = JSON.parse(localStorage.getItem("profiles") || "{}");
-  if (!profile.name) {
-    alert("Name is required to save profile.");
-    return;
+/* Container & Form */
+.container {
+  max-width: 700px;
+  margin: -40px auto 30px auto;
+  background: #fff;
+  padding: 35px 30px 30px 30px;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+}
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  gap: 5px;
+}
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  background: #f2f4f8;
+  color: #888;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.3s, color 0.3s;
+  position: relative;
+}
+.step.active {
+  background: #007bff;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+}
+
+.form-step {
+  display: none;
+}
+.form-step.active {
+  display: block;
+  animation: fadeIn 0.4s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+form h2 {
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+input[type="text"],
+input[type="email"],
+input[type="file"] {
+  padding: 12px 16px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  transition: 0.3s;
+  width: 100%;
+}
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
+
+.next-btn, .prev-btn, .generate-btn {
+  padding: 12px 28px;
+  margin: 10px 8px 0 0;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 500;
+}
+.prev-btn {
+  background: #6c757d;
+}
+.prev-btn:hover {
+  background: #495057;
+}
+.next-btn:hover, .generate-btn:hover {
+  background: #0056b3;
+}
+
+/* Template Cards */
+.template-list {
+  display: flex;
+  gap: 18px;
+  margin: 20px 0 30px 0;
+  flex-wrap: wrap;
+}
+.template-card {
+  background: #f2f4f8;
+  border: 2px solid #e3eafc;
+  border-radius: 10px;
+  padding: 22px 30px;
+  min-width: 120px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: border 0.3s, background 0.3s, color 0.3s;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.template-card.selected, .template-card:hover {
+  border: 2px solid #007bff;
+  background: #e3eafc;
+  color: #007bff;
+}
+
+/* Output Card (preview) */
+.output-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 25px;
+  line-height: 1.6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  margin-top: 30px;
+}
+.output-card ul {
+  list-style: none;
+  padding-left: 0;
+  line-height: 1.7;
+}
+.output-card li {
+  margin-bottom: 8px;
+}
+.output-card h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+.output-card h3 {
+  color: #2c3e50;
+  margin-top: 20px;
+}
+
+#downloadBtn {
+  display: block;
+  margin: 20px auto 0;
+  background-color: #28a745;
+}
+#downloadBtn:hover {
+  background-color: #1e7e34;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .container {
+    padding: 18px 6px;
   }
-  saved[profile.name] = profile;
-  localStorage.setItem("profiles", JSON.stringify(saved));
-  alert("Profile Saved!");
-  loadProfilesList();
-}
-
-function loadProfilesList() {
-  const profiles = JSON.parse(localStorage.getItem("profiles") || "{}");
-  const select = document.getElementById("profileSelect");
-  select.innerHTML = `<option value="">-- Load Saved Profile --</option>`;
-  Object.keys(profiles).forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    select.appendChild(opt);
-  });
-}
-
-function loadProfile() {
-  const name = document.getElementById("profileSelect").value;
-  if (!name) return;
-  const profiles = JSON.parse(localStorage.getItem("profiles") || "{}");
-  const data = profiles[name];
-  if (!data) return;
-
-  for (const key in data) {
-    const el = document.getElementById(key);
-    if (el && key !== "photo") {
-      el.value = data[key];
-    }
+  .hero-section {
+    padding: 30px 0 18px 0;
   }
-  generateBiodata(data);
+  .stepper {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .template-list {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
-
-window.onload = loadProfilesList;
