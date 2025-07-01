@@ -7,34 +7,75 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
-    <h1>Marriage Biodata Generator</h1>
+  <div class="hero-section">
+    <div class="hero-content">
+      <img src="logo.png" alt="Marriage Biodata Logo" class="logo"/>
+      <h1>Create Your Marriage Biodata</h1>
+      <p>Design your marriage bio data easily with our free templates and online maker. Find the perfect biodata format for your ideal match!</p>
+      <button class="start-btn" onclick="startBiodata()">Create My Biodata</button>
+    </div>
+  </div>
 
+  <div style="text-align:center; color:#888; font-size:15px; margin-bottom:18px;">By Nil</div>
+
+  <div class="container" id="biodataWizard" style="display:none;">
+    <div class="stepper">
+      <div class="step active" id="step1-tab">1. Personal</div>
+      <div class="step" id="step2-tab">2. Family</div>
+      <div class="step" id="step3-tab">3. Contact</div>
+      <div class="step" id="step4-tab">4. Photo</div>
+      <div class="step" id="step5-tab">5. Template</div>
+    </div>
     <form id="biodataForm">
-      <input type="text" placeholder="Full Name" id="name" required />
-      <input type="text" placeholder="Address" id="address" required />
-      <input type="text" placeholder="Date of Birth (DD-MM-YYYY)" id="dob" required />
-      <input type="text" placeholder="Birth Place" id="birthplace" />
-      <input type="text" placeholder="Height" id="height" />
-      <input type="text" placeholder="Weight" id="weight" />
-      <input type="text" placeholder="Education" id="education" />
-      <input type="text" placeholder="Kul (Caste)" id="kul" />
-      <input type="file" accept="image/*" id="photo" />
-      <h3>Family Details</h3>
-      <input type="text" placeholder="Father's Name" id="father" />
-      <input type="text" placeholder="Father's Occupation" id="fatherOcc" />
-      <input type="text" placeholder="Mother's Name" id="mother" />
-      <input type="text" placeholder="Brother's Name" id="brother" />
-      <input type="text" placeholder="Contact Number" id="contact" />
-
-      <button type="submit">Generate Biodata</button>
-      <button type="button" onclick="saveProfile()">Save Profile</button>
+      <div class="form-step" id="step1">
+        <h2>Personal Information</h2>
+        <input type="text" placeholder="Full Name" id="name" required />
+        <input type="text" placeholder="Gender" id="gender" />
+        <input type="text" placeholder="Date of Birth (DD-MM-YYYY)" id="dob" required />
+        <input type="text" placeholder="Place of Birth" id="birthplace" />
+        <input type="text" placeholder="Height" id="height" />
+        <input type="text" placeholder="Education" id="education" />
+        <input type="text" placeholder="Occupation" id="occupation" />
+        <button type="button" class="next-btn" onclick="nextStep(2)">Next</button>
+      </div>
+      <div class="form-step" id="step2" style="display:none;">
+        <h2>Family Details</h2>
+        <input type="text" placeholder="Father's Name" id="father" />
+        <input type="text" placeholder="Father's Occupation" id="fatherOcc" />
+        <input type="text" placeholder="Mother's Name" id="mother" />
+        <input type="text" placeholder="Mother's Occupation" id="motherOcc" />
+        <input type="text" placeholder="Total Brothers" id="brothers" />
+        <input type="text" placeholder="Total Sisters" id="sisters" />
+        <button type="button" class="prev-btn" onclick="prevStep(1)">Previous</button>
+        <button type="button" class="next-btn" onclick="nextStep(3)">Next</button>
+      </div>
+      <div class="form-step" id="step3" style="display:none;">
+        <h2>Contact Information</h2>
+        <input type="text" placeholder="Contact Number" id="contact" />
+        <input type="text" placeholder="Email" id="email" />
+        <input type="text" placeholder="Address" id="address" />
+        <button type="button" class="prev-btn" onclick="prevStep(2)">Previous</button>
+        <button type="button" class="next-btn" onclick="nextStep(4)">Next</button>
+      </div>
+      <div class="form-step" id="step4" style="display:none;">
+        <h2>Upload Photo</h2>
+        <input type="file" accept="image/*" id="photo" />
+        <div id="photoPreview"></div>
+        <button type="button" class="prev-btn" onclick="prevStep(3)">Previous</button>
+        <button type="button" class="next-btn" onclick="nextStep(5)">Next</button>
+      </div>
+      <div class="form-step" id="step5" style="display:none;">
+        <h2>Select Biodata Template</h2>
+        <div class="template-list">
+          <div class="template-card selected" onclick="selectTemplate(1)">Template 1</div>
+          <div class="template-card" onclick="selectTemplate(2)">Template 2</div>
+          <div class="template-card" onclick="selectTemplate(3)">Template 3</div>
+          <!-- Add more templates as needed -->
+        </div>
+        <button type="button" class="prev-btn" onclick="prevStep(4)">Previous</button>
+        <button type="submit" class="generate-btn">Generate Biodata</button>
+      </div>
     </form>
-
-    <select id="profileSelect" onchange="loadProfile()">
-      <option value="">-- Load Saved Profile --</option>
-    </select>
-
     <div id="biodataOutput" class="output-card"></div>
     <button onclick="downloadPDF()" id="downloadBtn" style="display:none;">Download as PDF</button>
   </div>
